@@ -35,6 +35,9 @@ public class Interpreter {
 					m.counter --;
 					isKey = true;
 				}
+				else {
+					System.out.println("Kein Befehl mit diesem Nanem vorhanden");
+				}
 			}
 			else {
 				isKey = false;

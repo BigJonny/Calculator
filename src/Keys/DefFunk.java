@@ -2,11 +2,13 @@ package Keys;
 
 import java.util.Scanner;
 
+import Main.PrivateFunktions;
 import Opperatoren.OpperatorHandler;
 
 public class DefFunk extends KeyWord{
 
 	private OpperatorHandler opHandler = new OpperatorHandler();
+	private PrivateFunktions pFunks = new PrivateFunktions();
 	
 	public DefFunk(String name, String task) {
 		super(name, task);
@@ -18,7 +20,8 @@ public class DefFunk extends KeyWord{
 		System.out.println("Definieren einer Funktion:");
 		Scanner scanner = new Scanner(System.in);
 		String funktion = scanner.nextLine();
-		System.out.println(funktion);
+		pFunks.defFunk(funktion);		
 	}
+
 
 }

@@ -22,8 +22,8 @@ public class OpperatorHandler {
 		opList.add(randInt);
 		Logarythmus nLog = new Logarythmus("logn", "Berechnet den natürlichen Logarythmus einer ratioealen Zahl n, 'logn(n)",1);
 		opList.add(nLog);
-		
 		this.size = opList.size();
+		//TODO: Instanz der Wurzel-Klasse erzeugen und in dei opList aufnehmen
 	}
 	
 	
