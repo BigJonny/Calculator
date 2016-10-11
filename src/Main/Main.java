@@ -10,7 +10,7 @@ public class Main {
 	public static ArrayList<String> eingaben = new ArrayList<String>();//Speichert alle Eingaben
 	public static ArrayList<String> ausgaben = new ArrayList<String>();//Speichert alle Ausgaben
 	public static int counter = 1;//Zählt jede neue Eingabeaufvorderung
-	public static Rechner rechner = new Rechner();
+	public static Rechner rechner = new Rechner();//RechnerKlasse
 	
 	public static void main(String args[]) {
 		System.out.println("Calculator:\nEnter '/help' for more information");

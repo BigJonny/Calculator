@@ -2,6 +2,8 @@ package Main;
 
 import java.util.ArrayList;
 
+import Opperatoren.OpperatorHandler;
+
 /**
  * Dient zum Verwalten aller selbst definierten Funktionen
  * 
@@ -14,6 +16,7 @@ public class PrivateFunktions {
 	private int params = 0;// Anzahl der Parameter dieser Funktion
 	private ArrayList funktion = new ArrayList();// Die Funktion in einem Array gespeicht
 	private ArrayList<String> varNames = new ArrayList<String>();
+	private OpperatorHandler opHandler = new OpperatorHandler();
 
 	/**
 	 * Speichert eine Funktion wenn diese Semantisch korrekt ist
@@ -24,7 +27,9 @@ public class PrivateFunktions {
 	 *         False
 	 */
 	public boolean defFunk(String eingabe) {
-		validateFunk(eingabe);
+		if(validateFunk(eingabe)){
+			return true;
+		}
 		return false;
 	}
 
@@ -41,12 +46,13 @@ public class PrivateFunktions {
 			if(currentE.contains(":=")){
 				String linkeS = "";
 				String rechteS = "";
-				this.name = getFunktionName(eingabe);
-				currentE = eingabe.substring(name.length());
+				this.name = getFunktionName(eingabe).trim();
+				currentE = eingabe.substring(name.length()).trim();
 				System.out.println(currentE + ", " + getParams(currentE));
 				System.out.println(currentE.substring(params+3).trim());
 				getRechnung(currentE.substring(params+3).trim());
-				System.out.println(getRechnung(currentE.substring(params+3).trim()));
+				//System.out.println(getRechnung(currentE));
+				return true;
 			}
 		} catch (Exception e) {
 			System.out.println("Etwas ist bei der Validierung dieser Funktion schief gelaufen");
@@ -104,8 +110,8 @@ public class PrivateFunktions {
 				return "";
 			}
 			for(int j = 0; j < rest.length(); j++){
-				if("" + rest.charAt(j) == varNames.get(i)){
-					rest = "0" + rest.substring(1);
+				if(varNames.get(i).equals("" + rest.charAt(j))){
+					rest = "0" + rest.substring(j);
 				}
 			}
 		}
