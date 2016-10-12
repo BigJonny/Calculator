@@ -12,10 +12,6 @@ import Opperatoren.OpperatorHandler;
  */
 public class PrivateFunktions {
 
-	private String name = "";// Name der Funktion
-	private int params = 0;// Anzahl der Parameter dieser Funktion
-	private ArrayList funktion = new ArrayList();// Die Funktion in einem Array gespeicht
-	private ArrayList<String> varNames = new ArrayList<String>();
 	private OpperatorHandler opHandler = new OpperatorHandler();
 
 	/**
@@ -27,96 +23,96 @@ public class PrivateFunktions {
 	 *         False
 	 */
 	public boolean defFunk(String eingabe) {
-		if(validateFunk(eingabe)){
+		if(getParts(eingabe) != null){
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Validiert eine Funktion und setzt die Anzahl der für sie vorgesehenen
-	 * Parameter
-	 * 
-	 * @param eingabe
-	 * @return True falls die Validierung erfolgreich war ansonten False
+	 * Befüllt ein Array das die drei Informationen Name,Variablen und Rechnung aufnimmt
+	 * @param eingabe Eingabe
+	 * @return Array mit gewünschten Infos ,asnonten null
 	 */
-	private boolean validateFunk(String eingabe) {
-		String currentE = eingabe;
-		try {
-			if(currentE.contains(":=")){
-				String linkeS = "";
-				String rechteS = "";
-				this.name = getFunktionName(eingabe).trim();
-				currentE = eingabe.substring(name.length()).trim();
-				System.out.println(currentE + ", " + getParams(currentE));
-				System.out.println(currentE.substring(params+3).trim());
-				getRechnung(currentE.substring(params+3).trim());
-				//System.out.println(getRechnung(currentE));
-				return true;
-			}
-		} catch (Exception e) {
-			System.out.println("Etwas ist bei der Validierung dieser Funktion schief gelaufen");
-		}
-		return false;
-	}
-
-	/**
-	 * Gibt den Namen einer definierten Funktion an
-	 * 
-	 * @param eingabe
-	 *            Angegeben String
-	 * @return Name der Funktion
-	 */
-	private String getFunktionName(String eingabe) {
-		char c = '.';
+	private String[] getParts(String eingabe){
 		String name = "";
-		if (eingabe.contains("(")) {
-			for (int i = 0; i < eingabe.length(); i++) {
-				c = eingabe.charAt(i);
-				name = name + c;
-				if (c != '(') {
-					return name;
-				}
+		String variablen = "";
+		String rechnung = "";
+		int counter = 0;
+		String[] cParts = new String[3];
+		for(int i = 0; i< eingabe.length(); i++){
+			if(eingabe.charAt(i) == '(' && counter == 0)
+			{
+				counter = 1;
+				cParts[0] = name;
+				System.out.println("Name:" + cParts[0]);
+			}
+			if(eingabe.charAt(i) == ')' && counter == 1){
+				counter = 2;
+				cParts[1] = variablen;
+				System.out.println("Variablen :" + cParts[1]);
+			}
+			if(eingabe.charAt(i) == ':' && eingabe.charAt(i +1) == '='){
+				counter = 2;
+			}
+			if(counter == 0){
+				name = name + eingabe.charAt(i);
+			}
+			else if(counter == 1 && eingabe.charAt(i) != '('){
+				variablen = variablen + eingabe.charAt(i);
+			}
+			else if(counter == 2 && eingabe.charAt(i) != ':' && eingabe.charAt(i) != '=' && eingabe.charAt(i) != ')'){
+				rechnung = rechnung + eingabe.charAt(i);
 			}
 		}
-		return name;
-	}
-
-	private int getParams(String rest) {
-		int counter = 1;
-		if (rest.contains(")") && rest.charAt(0) == '(') {
-			for (int i = 0; i < rest.length(); i++) {
-				if(rest.charAt(i) == ')'){
-					return counter;
-				}
-				else if (rest.charAt(i) == ',') {
-					counter++;
-				}
-				else {
-					varNames.add(""+rest.charAt(i));
-				}
-			}
-			return counter;
-		} else {
-			return -1;
+		cParts[2] = rechnung;
+		System.out.println("Rechnung :" + cParts[2]);
+		if(rechnung.isEmpty() == true || variablen.isEmpty() == true || name.isEmpty() == true){
+			return null;
 		}
+		if(checkRechnung(cParts)  == false){
+			return null;
+		}
+		return cParts;
 	}
 	
 	
-	private String getRechnung(String rest){
-		rest = rest.substring(2);
-		for(int i = 0; i <varNames.size(); i++){//Schaut nach ob auch genau so viel Variabalen in der Gleichung sind wie vorgegeben
-			if(rest.contains(varNames.get(i)) == false){
-				return "";
+	private boolean checkRechnung(String[] cParts){
+		Rechner r = new Rechner();
+		String rechnung = cParts[2];
+		ArrayList<String> vars = new ArrayList<String>();
+		String currentVarname = "";
+		for(int i = 0; i < cParts[1].length();i++){
+			if(cParts[1].charAt(i) == ','){
+				vars.add(currentVarname);
+				currentVarname = "";
 			}
-			for(int j = 0; j < rest.length(); j++){
-				if(varNames.get(i).equals("" + rest.charAt(j))){
-					rest = "0" + rest.substring(j);
-				}
+			else if(i == cParts[1].length() -1){
+				currentVarname = currentVarname + cParts[1].charAt(i);
+				vars.add(currentVarname);
+			}
+			else {
+				currentVarname = currentVarname + cParts[1].charAt(i);
 			}
 		}
 		
-		//Rechner r = new Rechner();
-		return rest;
+		for(int i = 0; i < vars.size(); i++){
+			if(rechnung.contains(vars.get(i))){
+				rechnung = rechnung.replaceAll(vars.get(i), "1");
+			}
+			else {
+				System.out.println("Error: Die Funktion"+ cParts[0] +" enthält nicht alle für sie vorgesehenen Variablen");
+				return false;
+			}
+		}
+		try{
+			Double d = Double.valueOf(r.getAusgabe(rechnung));
+			System.out.println(r.getAusgabe(rechnung));
+		}catch(Exception e){
+			System.out.println("Error: Funktion ist mathematisch nicht korrekt");
+			return false;
+		}
+		return true;
 	}
+	
 }

@@ -20,7 +20,12 @@ public class DefFunk extends KeyWord{
 		System.out.println("Definieren einer Funktion:");
 		Scanner scanner = new Scanner(System.in);
 		String funktion = scanner.nextLine();
-		pFunks.defFunk(funktion);		
+		if(pFunks.defFunk(funktion) == true){
+			System.out.println("Funktion wurde erfolgreich aufgenommen und gespeichert");
+		}
+		else {
+			System.out.println("Funktion wurde nicht gespeichert");
+		}
 	}
 
 
